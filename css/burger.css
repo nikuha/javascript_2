@@ -1,0 +1,42 @@
+.burger-container{
+    margin-top: 50px;
+    width: 600px;
+    max-width: 100%;
+}
+
+.burger-menu-row{
+    display: flex;
+    padding: 20px;
+}
+
+.burger-menu-row .title{
+    width: 150px;
+    font-weight: bold;
+}
+
+.my-burger{
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed #95a574;
+}
+
+.properties{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.property{
+    margin-right: 10px;
+    padding: 5px 10px;
+    border: 1px solid #95a574;
+    cursor: pointer;
+}
+
+.property.active{
+    background-color: #95a574;
+    color: white;
+}
+
+.my-burger .burger-item{
+    margin: 10px;
+}
