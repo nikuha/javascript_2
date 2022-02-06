@@ -4,56 +4,14 @@ class BurgerMenu{
     constructor(container){
         this.container = container;
         this._initProperties();
-        this.render();
+        this._render();
     }
 
-    render(){
+    _render(){
         const block = document.querySelector(this.container);
         for (let property of this.properties) {
             block.insertAdjacentHTML("beforeend", property.render());
         }
-    }
-
-    initBurger(burger_container){
-        this.burger_container = burger_container;
-        for (let pr of this.properties){
-            for (let item of pr.items) {
-                item.getDOM().addEventListener('click', () => {
-                    if(item.checked){
-                        if(pr.multi) item.uncheck();
-                    } else {
-                        if(!pr.multi)
-                            for (let item of pr.items) {
-                                item.uncheck();
-                            }
-                        item.check();
-                    }
-                    this._burgerInfo();
-                })
-            }
-            if(!pr.multi && pr.items[0]){
-                pr.items[0].check();
-            }
-        }
-        this._burgerInfo();
-    }
-
-    _burgerInfo(){
-        const block = document.querySelector(this.burger_container);
-        let price = 0;
-        let calories = 0;
-        block.innerHTML = '';
-        for (let pr of this.properties){
-            for (let item of pr.items){
-                if(item.checked) {
-                    block.insertAdjacentHTML("beforeend", item.getInfo());
-                    price += item.price;
-                    calories += item.calories;
-                }
-            }
-        }
-        block.insertAdjacentHTML("beforeend",
-            `<div class="burger-item">Итого: ${price}р, ${calories}ккал</div>`);
     }
 
     _initProperties(){
@@ -161,5 +119,59 @@ class BurgerPropertyItem{
 
 }
 
-const menu = new BurgerMenu('.burger-menu');
-menu.initBurger('.my-burger');
+class Burger{
+
+    constructor(menu_container, info_container){
+        this.info_container = info_container;
+        this.menu = new BurgerMenu('.burger-menu');
+        this.price = 0;
+        this.calories = 0;
+        this.init();
+    }
+
+    init(){
+        for (let pr of this.menu.properties){
+            for (let item of pr.items) {
+                item.getDOM().addEventListener('click', () => {
+                    if(item.checked){
+                        if(pr.multi) item.uncheck();
+                    } else {
+                        if(!pr.multi)
+                            for (let item of pr.items) {
+                                item.uncheck();
+                            }
+                        item.check();
+                    }
+                    this._burgerInfo();
+                })
+            }
+            if(!pr.multi && pr.items[0]){
+                pr.items[0].check();
+            }
+        }
+        this._burgerInfo();
+    }
+
+    _burgerInfo(){
+        const block = document.querySelector(this.info_container);
+        let price = 0;
+        let calories = 0;
+        block.innerHTML = '';
+        for (let pr of this.menu.properties){
+            for (let item of pr.items){
+                if(item.checked) {
+                    block.insertAdjacentHTML("beforeend", item.getInfo());
+                    price += item.price;
+                    calories += item.calories;
+                }
+            }
+        }
+        this.price = price;
+        this.calories = calories;
+        block.insertAdjacentHTML("beforeend",
+            `<div class="burger-item">Итого: ${this.price}р, ${this.calories}ккал</div>`);
+    }
+
+}
+
+const burger = new Burger('.burger-menu', '.my-burger');
