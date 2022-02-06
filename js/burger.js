@@ -102,7 +102,6 @@ class BurgerPropertyItem{
         return `<div class="burger-item">${this.name}: ${this.price}р, ${this.calories} ккал</div>`;
     }
 
-
     check(){
         this.checked = true;
         this.getDOM().classList.add('active');
