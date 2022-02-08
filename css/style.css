@@ -100,7 +100,7 @@ input, select, textarea {
     transition: .3s;
 }
 
-.menu-link a:hover, .menu-link.active a{
+.menu-link a:hover, .menu-link.active a {
     border-bottom: 1px solid white;
 }
 
@@ -629,43 +629,43 @@ input, select, textarea {
     padding: 3px 7px;
 }
 
-.orders-table{
+.orders-table {
     width: 850px;
     max-width: 100%;
     margin: 30px auto;
 }
 
-.orders-table td, .orders-table th{
+.orders-table td, .orders-table th {
     padding: 5px;
     text-align: center;
 }
 
-.orders-items-table{
+.orders-items-table {
     max-width: 100%;
     margin: 30px auto;
 }
 
-.orders-items-table td, .orders-items-table th{
+.orders-items-table td, .orders-items-table th {
     padding: 4px;
     text-align: center;
 }
 
-.orders-items-table td, .orders-table th{
+.orders-items-table td, .orders-table th {
     padding: 5px;
     text-align: center;
 }
 
-.orders-items-table select, input[type=number]{
+.orders-items-table select, input[type=number] {
     height: 30px;
     padding: 0 5px;
 }
 
-.orders-items-table select{
+.orders-items-table select {
     width: 400px;
     max-width: 100%;
 }
 
-.orders-items-table input[type=number]{
+.orders-items-table input[type=number] {
     width: 100px;
 }
 
@@ -690,29 +690,29 @@ input, select, textarea {
     background-color: #95a574;
 }
 
-.info-container .item{
+.info-container .item {
     display: flex;
 }
 
-.info-container .item > div{
+.info-container .item > div {
     width: 50%;
     padding: 5px;
 }
 
-.info-container .item > div:first-child{
+.info-container .item > div:first-child {
     text-align: right;
 }
 
-.info-container .item > div.a-button:first-child a{
+.info-container .item > div.a-button:first-child a {
     display: inline-block;
     width: auto;
 }
 
-.relative-block{
+.relative-block {
     position: relative;
 }
 
-.basket-menu{
+.basket-menu {
     display: none;
     position: absolute;
     top: 35px;
@@ -726,19 +726,19 @@ input, select, textarea {
     font-size: 14px;
 }
 
-.basket-menu .item-container{
+.basket-menu .item-container {
     margin-bottom: 20px;
 }
 
-.basket-menu .item-container img{
+.basket-menu .item-container img {
     max-width: 50px;
 }
 
-.basket-menu .item-container:last-child{
+.basket-menu .item-container:last-child {
     margin-bottom: 0;
 }
 
-.basket-menu.active{
+.basket-menu.active {
     display: block;
 }
 
@@ -755,19 +755,20 @@ input, select, textarea {
 }
 
 @media (max-width: 800px) {
-    .basket-menu{
+    .basket-menu {
         padding: 15px 10px;
         right: auto;
         left: calc(50% - 250px);
     }
-    .basket-menu:before{
+
+    .basket-menu:before {
         right: auto;
         left: calc(50% - 6px);
     }
 }
 
 @media (max-width: 580px) {
-    .basket-menu{
+    .basket-menu {
         width: 100%;
         left: 0;
     }
