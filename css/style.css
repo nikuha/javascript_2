@@ -730,6 +730,10 @@ input, select, textarea {
     margin-bottom: 20px;
 }
 
+.basket-menu .item-container img{
+    max-width: 50px;
+}
+
 .basket-menu .item-container:last-child{
     margin-bottom: 0;
 }

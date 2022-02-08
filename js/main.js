@@ -2,9 +2,10 @@ const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-sto
 
 class ProductList {
 
-    constructor(container = '.products-container') {
+    constructor(basket, container = '.products-container') {
         this.container = document.querySelector(container);
         this.products = [];
+        this.basket = basket;
         this._fetchProducts().then(() => this._render());
     }
 
@@ -29,7 +30,18 @@ class ProductList {
         for (let product of this.products) {
             this.container.insertAdjacentHTML("beforeend", product.render());
         }
+        this._initButtons();
     }
+
+    _initButtons(){
+        this.container.querySelectorAll(ProductItem.getBuySelector()).forEach(button => {
+            button.addEventListener('click',  () => {
+                const item_id = Number(button.getAttribute('data-id'));
+                this.basket.addItem(this.products.find(item => item.id === item_id));
+            })
+        });
+    }
+
 }
 
 class ProductItem {
@@ -39,14 +51,22 @@ class ProductItem {
         this.img = product.img ? product.img : 'img/default.png';
     }
 
+    static getBuySelector(){
+        return '.item-container button.buy';
+    }
+
+    getSelector(){
+        return `.item-container[data-id="${this.id}"]`;
+    }
+
     render() {
-        return `<div class="item-container" style="background-image: url('${this.img}')">
+        return `<div class="item-container" style="background-image: url('${this.img}')" data-id="${this.id}">
                 <div class="title row space-between">
                     <div>
                         <div>${this.title}</div> 
                         <div>${this.price}&#8381;</div>
                     </div>
-                    <div><button class="standard green">Купить</button></div>
+                    <div><button class="standard green buy" data-id="${this.id}">Купить</button></div>
                 </div>
             </div>`;
     }
@@ -59,6 +79,20 @@ class Basket {
         this.container = document.querySelector(container);
         this._initLink(link_selector);
         this._fetchItems().then(() => this._render());
+    }
+
+    addItem(product){
+        const item = this.items.find(item => item.id === product.id);
+        if(item){
+            item.quantity += 1;
+            this.container.querySelector(item.getQuantitySelector()).textContent = item.quantity;
+        } else {
+            const item = new BasketItem(product);
+            this.items.push(item);
+            this.container.insertAdjacentHTML("beforeend", item.render());
+            this._initButtons(item);
+        }
+        this.container.classList.add('active');
     }
 
     _initLink(link_selector){
@@ -87,8 +121,9 @@ class Basket {
         this._initButtons();
     }
 
-    _initButtons(){
-        this.container.querySelectorAll(BasketItem.getDeleteSelector()).forEach(button => {
+    _initButtons(item){
+        let selector = item ? item.getDeleteSelector() : BasketItem.getDeleteSelectors();
+        this.container.querySelectorAll(selector).forEach(button => {
             button.addEventListener('click',  () => {
                 const item_id = Number(button.getAttribute('data-id'));
                 const new_items = [];
@@ -112,16 +147,31 @@ class Basket {
 class BasketItem {
 
     constructor(item){
-        ({ product_name: this.title, price: this.price, id_product: this.id, quantity: this.quantity } = item);
-        this.img = item.img ? item.img : 'img/default_s.png';
+        if(item.product_name){
+            // из api
+            ({ product_name: this.title, price: this.price, id_product: this.id } = item);
+        } else {
+            // из ProductItem
+            ({ title: this.title, price: this.price, id: this.id } = item);
+        }
+        this.img = item.img ? item.img : 'img/default.png';
+        this.quantity = item.quantity ? item.quantity : 1;
     }
 
-    static getDeleteSelector(){
+    static getDeleteSelectors(){
         return '.item-container button.delete';
+    }
+
+    getDeleteSelector(){
+        return `.item-container[data-id="${this.id}"] button.delete`;
     }
 
     getSelector(){
         return `.item-container[data-id="${this.id}"]`;
+    }
+
+    getQuantitySelector(){
+        return `.item-container[data-id="${this.id}"] .quantity`;
     }
 
     render() {
@@ -134,7 +184,7 @@ class BasketItem {
                 </div>
                 <div>
                     <div>Кол-во:</div> 
-                    <div>${this.quantity}</div> 
+                    <div class="quantity">${this.quantity}</div> 
                 </div>
                 <div>
                     <div><button class="standard red delete" data-id="${this.id}">Удалить</button></div> 
@@ -143,5 +193,5 @@ class BasketItem {
     }
 }
 
-let list = new ProductList();
 const basket = new Basket();
+const list = new ProductList(basket);
