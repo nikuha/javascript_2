@@ -1,30 +1,33 @@
+const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+
 class ProductList {
 
     constructor(container = '.products-container') {
-        this.container = container;
+        this.container = document.querySelector(container);
         this.products = [];
-        this._fetchProducts();
-        this.render();
+        this._fetchProducts().then(() => this._render());
     }
 
-    getProductsTotalCost(){
-        return this.products.map(el => el.price).reduce((sum, el) => sum + el);
+    _getProductsTotalCost(){ // работает только после _fetchProducts
+        return this.products.reduce((sum, el) => sum += el.price, 0);
     }
 
     _fetchProducts() {
-        this.products = [
-            {id: 1, title: 'Notebook', price: 2000, img: 'img/products/product1.jpg'},
-            {id: 2, title: 'Mouse', price: 20, img: 'img/products/product2.jpg'},
-            {id: 3, title: 'Keyboard', price: 200, img: 'img/products/product3.jpg'},
-            {id: 4, title: 'Gamepad', price: 50},
-        ];
+        return fetch(`${API_URL}/catalogData.json`)
+            .then(result => result.json())
+            .then(data => {
+                for (let product of data) {
+                    this.products.push(new ProductItem(product));
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
-    render() {
-        const block = document.querySelector(this.container);
+    _render() {
         for (let product of this.products) {
-            const item = new ProductItem(product);
-            block.insertAdjacentHTML("beforeend", item.render());
+            this.container.insertAdjacentHTML("beforeend", product.render());
         }
     }
 }
@@ -32,9 +35,7 @@ class ProductList {
 class ProductItem {
 
     constructor(product) {
-        this.title = product.title;
-        this.id = product.id;
-        this.price = product.price;
+        ({ product_name: this.title, price: this.price, id_product: this.id } = product);
         this.img = product.img ? product.img : 'img/default.png';
     }
 
@@ -79,4 +80,3 @@ class BasketItem {
 }
 
 let list = new ProductList();
-console.log(list.getProductsTotalCost());
