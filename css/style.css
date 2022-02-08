@@ -707,3 +707,64 @@ input, select, textarea {
     display: inline-block;
     width: auto;
 }
+
+.relative-block{
+    position: relative;
+}
+
+.basket-menu{
+    display: none;
+    position: absolute;
+    top: 35px;
+    right: 0;
+    width: 500px;
+    padding: 30px;
+    background-color: white;
+    border: 1px solid #929191;
+    border-radius: 3px;
+    color: #826756;
+    font-size: 14px;
+}
+
+.basket-menu .item-container{
+    margin-bottom: 20px;
+}
+
+.basket-menu .item-container:last-child{
+    margin-bottom: 0;
+}
+
+.basket-menu.active{
+    display: block;
+}
+
+.basket-menu:before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    right: 50px;
+    width: 0;
+    height: 0;
+    border-bottom: 6px solid #fff;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+}
+
+@media (max-width: 800px) {
+    .basket-menu{
+        padding: 15px 10px;
+        right: auto;
+        left: calc(50% - 250px);
+    }
+    .basket-menu:before{
+        right: auto;
+        left: calc(50% - 6px);
+    }
+}
+
+@media (max-width: 580px) {
+    .basket-menu{
+        width: 100%;
+        left: 0;
+    }
+}
