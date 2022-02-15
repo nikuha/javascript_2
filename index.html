@@ -8,24 +8,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<div class="wrapper-container column">
+<div class="wrapper-container column" id="app">
     <div class="top-container">
         <div class="inner-container">
             <div class="logo-container row">
-                <!--div><a href="/"><img src="/img/logo.png" alt=""></a></div-->
                 <div class="title center">Интернет-магазин</div>
             </div>
+            <form class="search-form" @submit.prevent>
+                <input type="text" placeholder="поиск" v-model="search" />
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
             <div class="relative-block">
                 <div class="links row flex-wrap">
-                    <div class="menu-link"><a href="#" class="basket-a">Корзина</a></div>
+                    <div class="menu-link"><a href="#" class="basket-a" @click="showBasket = !showBasket">Корзина</a></div>
                 </div>
-                <div class="basket-menu"></div>
+                <div class="basket-menu" v-show="showBasket">
+                    <div v-if="!basketItems.length">Корзина пуста</div>
+                    <div class="item-container row space-between" v-for="item of basketItems" :key="item.id_product">
+                        <div><img :src="imgCatalog" alt="{{ item.product_name }}"></div>
+                        <div class="name">
+                            <div>{{ item.product_name }}</div>
+                            <div>{{ item.price*item.quantity }}&#8381;</div>
+                        </div>
+                        <div>
+                            <div>Кол-во:</div>
+                            <div class="quantity">{{ item.quantity }}</div>
+                        </div>
+                        <div>
+                            <div><button class="standard red delete" @click="delProduct(item)">Удалить</button></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="middle-container">
         <div class="inner-container">
-            <div class="products-container"></div>
+            <div v-if="!filtered_products.length" class="simple-title margin-top center">Товары не найдены</div>
+            <div class="products-container">
+                <div class="item-container" v-for="prod of filtered_products" :style="bgStyle"  :key="prod.id_product">
+                    <div class="title row space-between">
+                        <div>
+                            <div>{{ prod.product_name }}</div>
+                            <div>{{ prod.price }}&#8381;</div>
+                        </div>
+                        <div><button class="standard green buy" @click="addProduct(prod)">Купить</button></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="footer-container">
@@ -34,6 +66,8 @@
         </div>
     </div>
 </div>
-<script src="js/main.js"></script>
+<script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/vue@3"></script>
+<script src="js/main_vue.js"></script>
 </body>
 </html>
