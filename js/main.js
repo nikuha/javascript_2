@@ -1,82 +1,197 @@
+const API_URL = 'https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses';
+
 class ProductList {
 
-    constructor(container = '.products-container') {
-        this.container = container;
+    constructor(basket, container = '.products-container') {
+        this.container = document.querySelector(container);
         this.products = [];
-        this._fetchProducts();
-        this.render();
+        this.basket = basket;
+        this._fetchProducts().then(() => this._render());
     }
 
-    getProductsTotalCost(){
-        return this.products.map(el => el.price).reduce((sum, el) => sum + el);
+    _getProductsTotalCost(){ // работает только после _fetchProducts
+        return this.products.reduce((sum, el) => sum += el.price, 0);
     }
 
     _fetchProducts() {
-        this.products = [
-            {id: 1, title: 'Notebook', price: 2000, img: 'img/products/product1.jpg'},
-            {id: 2, title: 'Mouse', price: 20, img: 'img/products/product2.jpg'},
-            {id: 3, title: 'Keyboard', price: 200, img: 'img/products/product3.jpg'},
-            {id: 4, title: 'Gamepad', price: 50},
-        ];
+        return fetch(`${API_URL}/catalogData.json`)
+            .then(result => result.json())
+            .then(data => {
+                for (let product of data) {
+                    this.products.push(new ProductItem(product));
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
-    render() {
-        const block = document.querySelector(this.container);
+    _render() {
         for (let product of this.products) {
-            const item = new ProductItem(product);
-            block.insertAdjacentHTML("beforeend", item.render());
+            this.container.insertAdjacentHTML("beforeend", product.render());
         }
+        this._initButtons();
     }
+
+    _initButtons(){
+        this.container.querySelectorAll(ProductItem.getBuySelector()).forEach(button => {
+            button.addEventListener('click',  () => {
+                const item_id = Number(button.getAttribute('data-id'));
+                this.basket.addItem(this.products.find(item => item.id === item_id));
+            })
+        });
+    }
+
 }
 
 class ProductItem {
 
     constructor(product) {
-        this.title = product.title;
-        this.id = product.id;
-        this.price = product.price;
+        ({ product_name: this.title, price: this.price, id_product: this.id } = product);
         this.img = product.img ? product.img : 'img/default.png';
     }
 
+    static getBuySelector(){
+        return '.item-container button.buy';
+    }
+
+    getSelector(){
+        return `.item-container[data-id="${this.id}"]`;
+    }
+
     render() {
-        return `<div class="item-container" style="background-image: url('${this.img}')">
+        return `<div class="item-container" style="background-image: url('${this.img}')" data-id="${this.id}">
                 <div class="title row space-between">
                     <div>
                         <div>${this.title}</div> 
                         <div>${this.price}&#8381;</div>
                     </div>
-                    <div><button class="standard green">Купить</button></div>
+                    <div><button class="standard green buy" data-id="${this.id}">Купить</button></div>
                 </div>
             </div>`;
     }
 }
 
 class Basket {
-    container = ''; // где отображаем корзину
-    items = []; // содержимое корзины, элементы BasketItem
+    items = [];
 
-    constructor(container){} // инициируем корзину
+    constructor(container = '.basket-menu', link_selector = '.basket-a'){
+        this.container = document.querySelector(container);
+        this._initLink(link_selector);
+        this._fetchItems().then(() => this._render());
+    }
 
-    addItem(item){} // добавить товар
-    deleteItem(item){} // удалить товар
+    addItem(product){
+        const item = this.items.find(item => item.id === product.id);
+        if(item){
+            item.quantity += 1;
+            this.container.querySelector(item.getQuantitySelector()).textContent = item.quantity;
+        } else {
+            const item = new BasketItem(product);
+            this.items.push(item);
+            this.container.insertAdjacentHTML("beforeend", item.render());
+            this._initButtons(item);
+        }
+        this.container.classList.add('active');
+    }
 
-    getTotalCost(){} // сумма всех товаров
+    _initLink(link_selector){
+        document.querySelector(link_selector).addEventListener('click', () => {
+            this.container.classList.toggle('active');
+        });
+    }
 
-    render(){} // отобразить корзину
+    _fetchItems(){
+        return fetch(`${API_URL}/getBasket.json`)
+            .then(result => result.json())
+            .then(data => {
+                for (let item of data.contents) {
+                    this.items.push(new BasketItem(item));
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    _render(){
+        for (let item of this.items) {
+            this.container.insertAdjacentHTML("beforeend", item.render());
+        }
+        this._initButtons();
+    }
+
+    _initButtons(item){
+        let selector = item ? item.getDeleteSelector() : BasketItem.getDeleteSelectors();
+        this.container.querySelectorAll(selector).forEach(button => {
+            button.addEventListener('click',  () => {
+                const item_id = Number(button.getAttribute('data-id'));
+                const new_items = [];
+                this.items.forEach((item, k) => {
+                    if(item.id === item_id){
+                        this.container.querySelector(item.getSelector()).remove();
+                    } else{
+                        new_items.push(item);
+                    }
+                })
+                this.items = new_items;
+                if(!this.items.length){
+                    this.container.classList.remove('active');
+                }
+            })
+        });
+    }
+
 }
 
 class BasketItem {
-    product; // привязка к ProductItem
-    amount; // кол-во продуктов в корзине
 
-    constructor(product, amount = 1){} // инициируем корзину
+    constructor(item){
+        if(item.product_name){
+            // из api
+            ({ product_name: this.title, price: this.price, id_product: this.id } = item);
+        } else {
+            // из ProductItem
+            ({ title: this.title, price: this.price, id: this.id } = item);
+        }
+        this.img = item.img ? item.img : 'img/default.png';
+        this.quantity = item.quantity ? item.quantity : 1;
+    }
 
-    updateAmount(amount){} // изменить количество
+    static getDeleteSelectors(){
+        return '.item-container button.delete';
+    }
 
-    getCost(){} // стоимость товаров (product.price*amount)
+    getDeleteSelector(){
+        return `.item-container[data-id="${this.id}"] button.delete`;
+    }
 
-    render(){} // отобразить элемент корзины
+    getSelector(){
+        return `.item-container[data-id="${this.id}"]`;
+    }
+
+    getQuantitySelector(){
+        return `.item-container[data-id="${this.id}"] .quantity`;
+    }
+
+    render() {
+        return `
+            <div class="item-container row space-between" data-id="${this.id}">
+                <div><img src="${this.img}" alt=""></div>
+                <div class="name">
+                    <div>${this.title}</div> 
+                    <div>${this.price}&#8381;</div>   
+                </div>
+                <div>
+                    <div>Кол-во:</div> 
+                    <div class="quantity">${this.quantity}</div> 
+                </div>
+                <div>
+                    <div><button class="standard red delete" data-id="${this.id}">Удалить</button></div> 
+                </div>
+            </div>`;
+    }
 }
 
-let list = new ProductList();
-console.log(list.getProductsTotalCost());
+const basket = new Basket();
+const list = new ProductList(basket);
