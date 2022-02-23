@@ -713,7 +713,6 @@ input, select, textarea {
 }
 
 .basket-menu {
-    display: none;
     position: absolute;
     top: 35px;
     right: 0;
@@ -736,10 +735,6 @@ input, select, textarea {
 
 .basket-menu .item-container:last-child {
     margin-bottom: 0;
-}
-
-.basket-menu.active {
-    display: block;
 }
 
 .basket-menu:before {
@@ -772,4 +767,22 @@ input, select, textarea {
         width: 100%;
         left: 0;
     }
+}
+
+.search-form input[type="text"] {
+    width: 180px;
+    height: 25px;
+    border: none;
+    border-bottom: 1px solid white;
+    background-color: transparent;
+    color: white;
+}
+
+.search-form input::placeholder {
+    color: #bebebe;
+}
+
+.search-form button {
+    color: white;
+    background-color: transparent;
 }
