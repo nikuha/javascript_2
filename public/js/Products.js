@@ -17,18 +17,12 @@ export const Products = {
         }
     },
     mounted() {
-        this.getJson(`${this.API + this.catalogUrl}`)
+        this.getJson(`/api/products`)
             .then(data => {
                 for (let el of data) {
                     this.products.push(el);
                 }
             });
-        this.getJson(`getProducts.json`)
-            .then(data => {
-                for (let el of data) {
-                    this.products.push(el);
-                }
-            })
     },
     template: `
             <div v-if="!products.length" class="simple-title margin-top center">Товары не найдены</div>
