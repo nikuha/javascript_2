@@ -1,14 +1,13 @@
 import {BasketItem} from "./BasketItem.js";
 
 export const Basket = {
-    inject: ['API', 'getJson', 'postJson', 'putJson'],
+    inject: ['getJson', 'postJson', 'putJson'],
     components: {
         BasketItem
     },
     data() {
         return {
             showBasket: false,
-            basketUrl: '/getBasket.json',
             basketItems: [],
         }
     },

@@ -1,13 +1,12 @@
 import {ProductItem} from "./ProductItem.js";
 
 export const Products = {
-    inject: ['API', 'getJson'],
+    inject: ['getJson'],
     components: {
         ProductItem
     },
     data() {
         return {
-            catalogUrl: '/catalogData.json',
             products: []
         }
     },
