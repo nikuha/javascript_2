@@ -229,6 +229,7 @@ input, select, textarea {
     padding: 20px 5px;
     color: #826756;
     font-size: 13px;
+    font-weight: bold;
 }
 
 .hot-product-container {

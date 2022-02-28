@@ -1,0 +1,26 @@
+[
+  {
+    "id_product": 1,
+    "product_name": "Кофейная чашка",
+    "price": 800,
+    "img": "img/products/1.jpg"
+  },
+  {
+    "id_product": 2,
+    "product_name": "Чайная чашка",
+    "price": 700,
+    "img": "img/products/2.jpg"
+  },
+  {
+    "id_product": 3,
+    "product_name": "Набор мисочек",
+    "price": 1200,
+    "img": "img/products/3.jpg"
+  },
+  {
+    "id_product": 4,
+    "product_name": "Блюдо Осень",
+    "price": 1000,
+    "img": "img/products/4.jpg"
+  }
+]

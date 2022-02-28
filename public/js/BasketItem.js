@@ -8,12 +8,14 @@ export const BasketItem = {
     },
     computed: {
         trueImage() {
-            return this.defaultImg;
+            return (basketItem) => {
+                return  basketItem.img ? basketItem.img : this.defaultImg;
+            };
         }
     },
     template: `
         <div class="item-container row space-between">
-            <div><img :src="trueImage" :alt="basketItem.product_name"></div>
+            <div><img :src="trueImage(basketItem)" :alt="basketItem.product_name"></div>
             <div class="name">
                 <div>{{ basketItem.product_name }}</div>
                 <div>{{ basketItem.price*basketItem.quantity }}&#8381;</div>
