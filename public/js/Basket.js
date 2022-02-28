@@ -33,6 +33,7 @@ export const Basket = {
                         this.basketItems.push(prod);
                     }
                 });
+            this.showBasket = true;
         },
         delProduct(product){
             let find = this.basketItems.find(el => el.id_product === product.id_product);
