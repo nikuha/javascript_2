@@ -1,11 +1,3 @@
 {
-    "contents": [
-        {
-            "quantity": 1,
-            "id_product": 2,
-            "product_name": "Чайная чашка",
-            "price": 700,
-            "img": "img/products/2.jpg"
-        }
-    ]
+    "contents": []
 }
